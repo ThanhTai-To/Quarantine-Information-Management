@@ -61,10 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS, "/*").permitAll()
                 .antMatchers("/admin/auth")
                 .permitAll()
-
                 .anyRequest()
-                .authenticated();
-        http.addFilterBefore(new CorsFilter(corsConfigurationSource()), LogoutFilter.class);
+                .authenticated().and().httpBasic();
+        http.addFilterBefore(new CorsFilter(corsConfigurationSource()), AbstractPreAuthenticatedProcessingFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
     @Bean
@@ -97,4 +96,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }
