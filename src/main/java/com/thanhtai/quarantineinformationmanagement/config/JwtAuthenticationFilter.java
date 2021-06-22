@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
-        httpServletResponse.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, xsrf-token");
         if ("OPTIONS".equals(httpServletRequest.getMethod())) {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         }
