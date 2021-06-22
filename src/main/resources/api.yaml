@@ -1,0 +1,45 @@
+openapi: 3.0.3
+info:
+  title: API specification
+  description: API specification for profile microservice
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8081'
+paths:
+  /admin/auth:
+    post:
+      tags:
+        - Login
+      summary: login
+      operationId: Login
+      requestBody:
+        description: Login with user name and password
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/LoginRequestModel'
+      responses:
+        '200':
+          description: Log in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+components:
+  schemas:
+    LoginRequestModel:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+  
