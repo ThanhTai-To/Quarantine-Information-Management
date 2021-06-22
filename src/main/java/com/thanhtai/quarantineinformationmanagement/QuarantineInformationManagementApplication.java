@@ -10,4 +10,5 @@ public class QuarantineInformationManagementApplication {
         SpringApplication.run(QuarantineInformationManagementApplication.class, args);
     }
 
+
 }
