@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin("*")
 public class AdminController implements AdminApi {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
