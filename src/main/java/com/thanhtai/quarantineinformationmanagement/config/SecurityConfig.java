@@ -76,7 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // NOTE: setAllowCredentials(true) is important,
         // otherwise, the value of the 'Access-Control-Allow-Origin' header in the response
         // must not be the wildcard '*' when the request's credentials mode is 'include'.
-        configuration.setAllowCredentials(true);
+//        configuration.setAllowCredentials(true);
+        configuration.setAllowedOriginPatterns(Arrays.asList("https://*","http://*"));
 
         // NOTE: setAllowedHeaders is important!
         // Without it, OPTIONS preflight request will fail with 403 Invalid CORS request
