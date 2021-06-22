@@ -24,8 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-//        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
-
         try {
             String jwt = getJwtFromRequest(httpServletRequest);
 //            logger.info("validateToken " + jwt + " username=" + tokenProvider.getUserNameFromJWT(jwt));
