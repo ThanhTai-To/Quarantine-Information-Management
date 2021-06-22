@@ -71,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         logger.info("before jwtAuthFilter");
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         logger.info("before CorsConfigurationSource");

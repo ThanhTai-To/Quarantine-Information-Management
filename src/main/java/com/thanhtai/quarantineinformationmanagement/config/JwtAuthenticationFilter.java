@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.trace("Sending Header....");
             // CORS "pre-flight" request
             httpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-//			response.addHeader("Access-Control-Allow-Headers", "Authorization");
+            httpServletResponse.addHeader("Access-Control-Allow-Headers", "Authorization");
             httpServletResponse.addHeader("Access-Control-Allow-Headers", "Content-Type");
             httpServletResponse.addHeader("Access-Control-Max-Age", "3600");
         }
