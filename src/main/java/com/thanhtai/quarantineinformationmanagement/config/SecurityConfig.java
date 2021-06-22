@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         logger.info("before cors");
-        http.cors()
+        http.cors().configurationSource(corsConfigurationSource())
                 .and()
                 .csrf()
                 .disable()
