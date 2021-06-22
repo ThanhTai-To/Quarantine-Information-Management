@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AdminController implements AdminApi {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
@@ -36,13 +37,11 @@ public class AdminController implements AdminApi {
     }
 
     @GetMapping("/")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public String test() {
         return "Test";
     }
 
     @Override
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<LoginResponse> login(@Valid LoginRequestModel loginRequestModel) {
         try{
             logger.info("before auth");
