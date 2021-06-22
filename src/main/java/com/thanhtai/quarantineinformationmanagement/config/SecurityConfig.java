@@ -50,9 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         logger.info("before cors");
-        http.cors().disable()
-                .csrf()
-                .disable()
+        http.csrf().disable()
+                .cors()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/admin/auth")
                 .permitAll()
@@ -87,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // NOTE: setAllowedHeaders is important!
         // Without it, OPTIONS preflight request will fail with 403 Invalid CORS request
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
