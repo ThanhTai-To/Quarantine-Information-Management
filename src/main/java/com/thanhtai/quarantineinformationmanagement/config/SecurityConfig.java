@@ -51,23 +51,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         logger.info("before cors");
-        http.cors().disable()
-                .csrf().disable()
-                .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/admin/auth")
-                .permitAll()
-//                .antMatchers("/**")
-//                .permitAll()
-                .anyRequest()
-                .authenticated()
+        http.cors()
                 .and()
+                .csrf()
+                .disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
+                .and()
+                .authorizeRequests()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .antMatchers(HttpMethod.POST, "/admin/auth")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
         logger.info("after http cors");
         http.addFilterBefore(new CorsFilter(corsConfigurationSource()), AbstractPreAuthenticatedProcessingFilter.class);
         logger.info("before jwtAuthFilter");
@@ -76,11 +75,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        logger.info("before CorsConfigurationSource");
         final CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("OPTIONS", "GET", "POST", "PUT", "DELETE", "PATCH"));
 
         // NOTE: setAllowCredentials(true) is important,
         // otherwise, the value of the 'Access-Control-Allow-Origin' header in the response
@@ -89,7 +87,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // NOTE: setAllowedHeaders is important!
         // Without it, OPTIONS preflight request will fail with 403 Invalid CORS request
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Authorization",
+                "Accept",
+                "Cache-Control",
+                "Content-Type",
+                "Origin",
+                "ajax", // <-- This is needed for jQuery's ajax request.
+                "x-csrf-token",
+                "x-requested-with",
+                "strict-origin-when-cross-origin"
+        ));
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
