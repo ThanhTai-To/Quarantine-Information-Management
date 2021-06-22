@@ -1,7 +1,5 @@
 package com.thanhtai.quarantineinformationmanagement.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,13 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.Collections;
-
 
 @Configuration
 @EnableWebSecurity
@@ -34,12 +30,12 @@ import java.util.Collections;
         prePostEnabled = true
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Bean
+    JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -50,8 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        logger.info("before cors");
-        http.cors().configurationSource(corsConfigurationSource())
+        http.cors()
                 .and()
                 .csrf()
                 .disable()
@@ -62,23 +57,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers(HttpMethod.POST, "/admin/auth")
+                .antMatchers("/",
+                        "/favicon.ico",
+                        "/**/*.png",
+                        "/**/*.gif",
+                        "/**/*.svg",
+                        "/**/*.jpg",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js")
                 .permitAll()
+                .antMatchers("/admin/auth")
+                .permitAll()
+
                 .anyRequest()
                 .authenticated();
-        logger.info("after http cors");
         http.addFilterBefore(new CorsFilter(corsConfigurationSource()), AbstractPreAuthenticatedProcessingFilter.class);
-        logger.info("before jwtAuthFilter");
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Arrays.asList("OPTIONS", "GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
 
         // NOTE: setAllowCredentials(true) is important,
         // otherwise, the value of the 'Access-Control-Allow-Origin' header in the response
