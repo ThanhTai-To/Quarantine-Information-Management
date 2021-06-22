@@ -23,10 +23,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+        logger.info("start request= " + httpServletRequest.toString() + " \nresponse="+httpServletResponse.toString());
         httpServletResponse.setHeader("Access-Control-Allow-Origin", httpServletRequest.getHeader("Origin"));
         httpServletResponse.setHeader("Access-Control-Allow-Methods","POST, GET, OPTIONS, DELETE, OPTIONS");
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
-        httpServletResponse.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", "X-PINGOTHER,Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization");
+        httpServletResponse.addHeader("Access-Control-Expose-Headers", "xsrf-token");
+
+        logger.info("end response=" + httpServletResponse.toString() + " \nif="+"OPTIONS".equals(httpServletRequest.getMethod()));
         if ("OPTIONS".equals(httpServletRequest.getMethod())) {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
         }

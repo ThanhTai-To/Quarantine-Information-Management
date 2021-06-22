@@ -88,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "Origin",
                 "ajax", // <-- This is needed for jQuery's ajax request.
                 "x-csrf-token",
-                "x-requested-with",
+                "X-Requested-With",
                 "strict-origin-when-cross-origin"
         ));
 
