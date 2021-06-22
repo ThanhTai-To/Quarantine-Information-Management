@@ -50,22 +50,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         logger.info("before cors");
-        http.cors().and()
+        http.cors().disable()
                 .csrf()
                 .disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(unauthorizedHandler)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .authorizeRequests()
                 .antMatchers("/admin/auth")
                 .permitAll()
 //                .antMatchers("/**")
 //                .permitAll()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(unauthorizedHandler)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and();
         logger.info("after http cors");
         http.addFilterBefore(new CorsFilter(corsConfigurationSource()), AbstractPreAuthenticatedProcessingFilter.class);
         logger.info("before jwtAuthFilter");
