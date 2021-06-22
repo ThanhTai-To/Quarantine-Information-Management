@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,11 +36,13 @@ public class AdminController implements AdminApi {
     }
 
     @GetMapping("/")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public String test() {
         return "Test";
     }
 
     @Override
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     public ResponseEntity<LoginResponse> login(@Valid LoginRequestModel loginRequestModel) {
         try{
             logger.info("before auth");
