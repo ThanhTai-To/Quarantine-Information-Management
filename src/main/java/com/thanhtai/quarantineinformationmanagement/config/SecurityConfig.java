@@ -90,7 +90,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "ajax", // <-- This is needed for jQuery's ajax request.
                 "x-csrf-token",
                 "X-Requested-With",
-                "strict-origin-when-cross-origin"
+                "strict-origin-when-cross-origin",
+                "access-control-allow-origin"
         ));
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
