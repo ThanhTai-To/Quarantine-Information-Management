@@ -27,6 +27,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         httpServletResponse.setHeader("Access-Control-Allow-Methods","POST, GET, OPTIONS, DELETE, OPTIONS");
         httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+        if ("OPTIONS".equals(httpServletRequest.getMethod())) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+        }
         try {
             String jwt = getJwtFromRequest(httpServletRequest);
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)){
