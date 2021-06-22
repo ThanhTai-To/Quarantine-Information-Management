@@ -26,6 +26,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+
+        if (httpServletRequest.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(httpServletRequest.getMethod())) {
+            logger.trace("Sending Header....");
+            // CORS "pre-flight" request
+            httpServletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//			response.addHeader("Access-Control-Allow-Headers", "Authorization");
+            httpServletResponse.addHeader("Access-Control-Allow-Headers", "Content-Type");
+            httpServletResponse.addHeader("Access-Control-Max-Age", "1");
+        }
         try {
             String jwt = getJwtFromRequest(httpServletRequest);
 //            logger.info("validateToken " + jwt + " username=" + tokenProvider.getUserNameFromJWT(jwt));
@@ -40,11 +50,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception ex){
             logger.error("Could not set user authentication in security context", ex);
         }
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
-        httpServletResponse.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");
-        httpServletResponse.addHeader("Access-Control-Expose-Headers", "xsrf-token");
+//        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+//        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+//        httpServletResponse.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");
+//        httpServletResponse.addHeader("Access-Control-Expose-Headers", "xsrf-token");
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
