@@ -40,10 +40,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception ex){
             logger.error("Could not set user authentication in security context", ex);
         }
-        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
-        httpServletResponse.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
-        httpServletResponse.addHeader("Access-Control-Max-Age", "3600");
-        httpServletResponse.addHeader("Access-Control-Allow-Headers", "x-requested-with");
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");
+        httpServletResponse.addHeader("Access-Control-Expose-Headers", "xsrf-token");
+
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
     private String getJwtFromRequest(HttpServletRequest request) {
