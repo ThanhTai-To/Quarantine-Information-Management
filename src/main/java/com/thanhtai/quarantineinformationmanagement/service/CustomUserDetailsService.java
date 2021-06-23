@@ -1,7 +1,6 @@
 package com.thanhtai.quarantineinformationmanagement.service;
 
-import com.thanhtai.quarantineinformationmanagement.model.User;
-import com.thanhtai.quarantineinformationmanagement.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,7 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
-    @Autowired
-    private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -30,11 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        if (userRepository.findByUsername(username) == null) {
-//            throw new UsernameNotFoundException("username-" + username);
-//        }
-//        User user = userRepository.findByUsername(username);
-//        logger.info("user-" + user.getUsername() + " role-" + user.getRole());
         logger.info("start custom");
         if (!username.equals(USER_NAME)) {
             throw new RuntimeException("Invalid username/password");

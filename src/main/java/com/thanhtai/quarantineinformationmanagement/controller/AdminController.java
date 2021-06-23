@@ -1,12 +1,18 @@
 package com.thanhtai.quarantineinformationmanagement.controller;
 
 import com.thanhtai.quarantineinformationmanagement.api.AdminApi;
+import com.thanhtai.quarantineinformationmanagement.api.model.CreateQIRequestModel;
 import com.thanhtai.quarantineinformationmanagement.api.model.LoginRequestModel;
 import com.thanhtai.quarantineinformationmanagement.api.model.LoginResponse;
+import com.thanhtai.quarantineinformationmanagement.api.model.ObjectCreationSuccessResponse;
 import com.thanhtai.quarantineinformationmanagement.config.JwtTokenProvider;
+import com.thanhtai.quarantineinformationmanagement.model.QuarantineInformation;
+import com.thanhtai.quarantineinformationmanagement.service.QuarantineInformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,8 +29,10 @@ import javax.validation.Valid;
 
 @RestController
 public class AdminController implements AdminApi {
-
     private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
+
+    @Autowired
+    private QuarantineInformationService quarantineInformationService;
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
@@ -36,9 +44,20 @@ public class AdminController implements AdminApi {
     }
 
     @GetMapping("/")
-    @CrossOrigin("*")
+//    @CrossOrigin("*")
     public String test() {
         return "Test";
+    }
+
+    @Override
+    @CrossOrigin("*")
+    public ResponseEntity<ObjectCreationSuccessResponse> createQuarantineInformation(@Valid CreateQIRequestModel createQIRequestModel) {
+        QuarantineInformation quarantineInformation = quarantineInformationService.createQuarantineInformation(createQIRequestModel);
+        ObjectCreationSuccessResponse response = new ObjectCreationSuccessResponse();
+        response.setId(quarantineInformation.getId());
+        response.setResponseCode(HttpStatus.CREATED.value());
+        response.setMessage("Created successfully");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @Override

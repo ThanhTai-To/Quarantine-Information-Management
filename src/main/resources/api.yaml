@@ -9,7 +9,7 @@ paths:
   /admin/auth:
     post:
       tags:
-        - Login
+        - login
       summary: login
       operationId: Login
       requestBody:
@@ -25,11 +25,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
+        '500':
+          description: "unexpected technical errors"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/quarantine-information:
+    post:
+      tags:
+        - createQuarantineInformation
+      summary: Create Quarantine Information
+      operationId: createQuarantineInformation
+      requestBody:
+        description: Create quarantine information
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateQIRequestModel'
+      responses:
+        '200':
+          description: created quarantine information successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectCreationSuccessResponse'
+        '500':
+          description: "unexpected technical errors"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
 
 components:
   schemas:
     LoginRequestModel:
       type: object
+      required:
+        - username
+        - password
       properties:
         username:
           type: string
@@ -42,4 +76,66 @@ components:
           type: string
         tokenType:
           type: string
+
+    CreateQIRequestModel:
+      type: object
+      required:
+        - originFrom
+        - destination
+        - startAt
+      properties:
+        originFrom:
+#          type: string
+          $ref: '#/components/schemas/Province'
+        destination:
+#          type: string
+          $ref: '#/components/schemas/Province'
+        startAt:
+          type: string
+          pattern: '^\d{2}-\d{2}-\d{4}$'
+        endAt:
+          type: string
+          pattern: '^\d{2}-\d{2}-\d{4}$'
+
+
+
+
+    ObjectCreationSuccessResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        responseCode:
+          type: integer
+        message:
+          type: string
+
+    ApiError:
+      type: object
+      properties:
+        faults:
+          type: array
+          items:
+            $ref: "#/components/schemas/Fault"
+        responseCode:
+          type: integer
+    Fault:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+        internalMessage:
+          type: string
+        code:
+          type: integer
+        userMessage:
+          type: string
+
+    Province:
+      type: string
+      enum:
+        - HCM
+        - HA_NOI
+
+
   

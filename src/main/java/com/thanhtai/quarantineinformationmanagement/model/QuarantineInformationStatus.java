@@ -1,6 +1,5 @@
 package com.thanhtai.quarantineinformationmanagement.model;
 
-
-public enum Role {
-    ADMIN
+public enum QuarantineInformationStatus {
+    NEW, UPDATED
 }
