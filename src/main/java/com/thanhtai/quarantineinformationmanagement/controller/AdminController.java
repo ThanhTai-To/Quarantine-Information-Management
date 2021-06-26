@@ -47,11 +47,9 @@ public class AdminController implements AdminApi {
 
     @Override
     @CrossOrigin("*")
-    public ResponseEntity<ObjectCreationSuccessResponse> createQuarantineInformation(@Valid CreateQIRequestModel createQIRequestModel) {
+    public ResponseEntity<ObjectSuccessResponse> createQuarantineInformation(@Valid CreateQIRequestModel createQIRequestModel) {
         QuarantineInformation quarantineInformation = quarantineInformationService.createQuarantineInformation(createQIRequestModel);
-        ObjectCreationSuccessResponse response = new ObjectCreationSuccessResponse();
-        response.setId(quarantineInformation.getId());
-        response.setResponseCode(HttpStatus.CREATED.value());
+        ObjectSuccessResponse response = buildObjectSuccessResponse(quarantineInformation.getId());
         response.setMessage("Created successfully");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -61,6 +59,22 @@ public class AdminController implements AdminApi {
         QuarantineInformationResponse quarantineInformationResponse =
                 quarantineInformationService.getListQuarantineInformation(page);
         return ResponseEntity.ok(quarantineInformationResponse);
+    }
+
+    @Override
+    public ResponseEntity<ObjectSuccessResponse> deleteQuarantineInformationById(String quarantineInfoId) {
+        quarantineInformationService.deleteQuarantineInformationById(quarantineInfoId);
+        ObjectSuccessResponse response = buildObjectSuccessResponse(quarantineInfoId);
+        response.setMessage("Deleted successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<QuarantineInformationResponseModel> updateQuarantineInformationById(String quarantineInfoId
+            , @Valid UpdateQIRequestModel updateQIRequestModel) {
+        QuarantineInformationResponseModel responseModel =
+                quarantineInformationService.updateQuarantineInformationById(quarantineInfoId, updateQIRequestModel);
+        return ResponseEntity.ok(responseModel);
     }
 
     @Override
@@ -86,4 +100,13 @@ public class AdminController implements AdminApi {
             throw new UsernameNotFoundException("Logging: "+e.getMessage());
         }
     }
+
+    private ObjectSuccessResponse buildObjectSuccessResponse(String id) {
+        ObjectSuccessResponse response = new ObjectSuccessResponse();
+        response.setId(id);
+        response.setResponseCode(HttpStatus.CREATED.value());
+        return response;
+    }
+
+
 }

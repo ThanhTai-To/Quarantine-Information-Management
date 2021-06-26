@@ -74,7 +74,66 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ObjectCreationSuccessResponse'
+                $ref: '#/components/schemas/ObjectSuccessResponse'
+        '500':
+          description: "unexpected technical errors"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /admin/quarantine-information/{quarantineInfoId}:
+    delete:
+      tags:
+        - deleteQuarantineInformationById
+      summary: Delete quarantine information by id
+      operationId: deleteQuarantineInformationById
+      parameters:
+        - name: quarantineInfoId
+          in: path
+          description: Quarantine Information Id
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        '200':
+          description: Delete quarantine information by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectSuccessResponse'
+        '500':
+          description: "unexpected technical errors"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    put:
+      tags:
+        - updateQuarantineInformationById
+      summary: Update quarantine information by id
+      operationId: updateQuarantineInformationById
+      parameters:
+        - name: quarantineInfoId
+          in: path
+          description: Quarantine Information Id
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        description: Update quarantine information by id
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateQIRequestModel'
+      responses:
+        '200':
+          description: Update quarantine information by id successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuarantineInformationResponseModel'
         '500':
           description: "unexpected technical errors"
           content:
@@ -121,6 +180,24 @@ components:
           type: string
           pattern: '^\d{2}-\d{2}-\d{4}$'
           description: dd-mm-yyyy
+    UpdateQIRequestModel:
+      type: object
+      required:
+        - originFrom
+        - destination
+        - endAt
+        - reasonUpdated
+      properties:
+        originFrom:
+          $ref: '#/components/schemas/Province'
+        destination:
+          $ref: '#/components/schemas/Province'
+        endAt:
+          type: string
+          pattern: '^\d{2}-\d{2}-\d{4}$'
+          description: dd-mm-yyyy
+        reasonUpdated:
+          type: string
 
     QuarantineInformationResponse:
       type: object
@@ -160,7 +237,7 @@ components:
 
 
 
-    ObjectCreationSuccessResponse:
+    ObjectSuccessResponse:
       type: object
       properties:
         id:
@@ -169,6 +246,7 @@ components:
           type: integer
         message:
           type: string
+
 
     ApiError:
       type: object
