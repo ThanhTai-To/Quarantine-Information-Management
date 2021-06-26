@@ -1,5 +1,6 @@
 package com.thanhtai.quarantineinformationmanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -27,11 +28,9 @@ public class QuarantineInformation {
     @Setter
     private String endAt;
     @Getter
-    @Setter
     @CreatedDate
     private String createdAt;
     @Getter
-    @Setter
     @LastModifiedDate
     private String updatedAt;
     @Getter

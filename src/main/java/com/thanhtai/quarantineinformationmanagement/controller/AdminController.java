@@ -1,17 +1,13 @@
 package com.thanhtai.quarantineinformationmanagement.controller;
 
 import com.thanhtai.quarantineinformationmanagement.api.AdminApi;
-import com.thanhtai.quarantineinformationmanagement.api.model.CreateQIRequestModel;
-import com.thanhtai.quarantineinformationmanagement.api.model.LoginRequestModel;
-import com.thanhtai.quarantineinformationmanagement.api.model.LoginResponse;
-import com.thanhtai.quarantineinformationmanagement.api.model.ObjectCreationSuccessResponse;
+import com.thanhtai.quarantineinformationmanagement.api.model.*;
 import com.thanhtai.quarantineinformationmanagement.config.JwtTokenProvider;
 import com.thanhtai.quarantineinformationmanagement.model.QuarantineInformation;
 import com.thanhtai.quarantineinformationmanagement.service.QuarantineInformationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,6 +54,13 @@ public class AdminController implements AdminApi {
         response.setResponseCode(HttpStatus.CREATED.value());
         response.setMessage("Created successfully");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<QuarantineInformationResponse> getListQuarantineInformation(Integer page) {
+        QuarantineInformationResponse quarantineInformationResponse =
+                quarantineInformationService.getListQuarantineInformation(page);
+        return ResponseEntity.ok(quarantineInformationResponse);
     }
 
     @Override

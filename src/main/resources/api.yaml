@@ -32,6 +32,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiError'
   /admin/quarantine-information:
+    get:
+      tags:
+        - getListQuarantineInformation
+      summary: Get list quarantine information
+      operationId: getListQuarantineInformation
+      parameters:
+        - in: query
+          name: page
+          description: page number, start at page 0, each page will return 20 items
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Get list quarantine information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuarantineInformationResponse'
+        '500':
+          description: "unexpected technical errors"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
     post:
       tags:
         - createQuarantineInformation
@@ -96,6 +121,42 @@ components:
           type: string
           pattern: '^\d{2}-\d{2}-\d{4}$'
           description: dd-mm-yyyy
+
+    QuarantineInformationResponse:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+        totalPage:
+          type: integer
+        totalElements:
+          type: integer
+        quarantineInformationList:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuarantineInformationResponseModel'
+    QuarantineInformationResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        originFrom:
+          type: string
+        destination:
+          type: string
+        startAt:
+          type: string
+        endAt:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        status:
+          type: string
+        reasonUpdated:
+          type: string
+
 
 
 
