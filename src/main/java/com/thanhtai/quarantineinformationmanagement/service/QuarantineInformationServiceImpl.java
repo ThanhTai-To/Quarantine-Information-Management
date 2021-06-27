@@ -116,6 +116,7 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
         quarantineInformation.setDestination(updateQIRequestModel.getDestination().toString());
         quarantineInformation.setEndAt(updateQIRequestModel.getEndAt());
         quarantineInformation.setReasonUpdated(updateQIRequestModel.getReasonUpdated());
+        quarantineInformation.setStatus("UPDATED");
         return quarantineInformation;
     }
 
