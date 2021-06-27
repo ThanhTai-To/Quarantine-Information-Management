@@ -10,7 +10,7 @@ public interface QuarantineInformationService {
 
     QuarantineInformation createQuarantineInformation(CreateQIRequestModel createQIRequestModel);
 
-    QuarantineInformationResponse getListQuarantineInformation(Integer page);
+    QuarantineInformationResponse getListQuarantineInformation(Integer page, String originFrom, String destination);
 
     void deleteQuarantineInformationById(String quarantineInfoId);
 

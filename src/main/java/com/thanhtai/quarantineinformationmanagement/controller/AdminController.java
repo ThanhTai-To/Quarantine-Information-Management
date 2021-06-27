@@ -55,9 +55,9 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<QuarantineInformationResponse> getListQuarantineInformation(Integer page) {
+    public ResponseEntity<QuarantineInformationResponse> getListQuarantineInformation(Integer page, String originFrom, String destination) {
         QuarantineInformationResponse quarantineInformationResponse =
-                quarantineInformationService.getListQuarantineInformation(page);
+                quarantineInformationService.getListQuarantineInformation(page, originFrom, destination);
         return ResponseEntity.ok(quarantineInformationResponse);
     }
 

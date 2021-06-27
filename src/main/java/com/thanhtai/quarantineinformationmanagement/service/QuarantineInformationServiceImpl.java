@@ -1,9 +1,10 @@
 package com.thanhtai.quarantineinformationmanagement.service;
 
-import com.thanhtai.quarantineinformationmanagement.api.model.CreateQIRequestModel;
-import com.thanhtai.quarantineinformationmanagement.api.model.QuarantineInformationResponse;
-import com.thanhtai.quarantineinformationmanagement.api.model.QuarantineInformationResponseModel;
-import com.thanhtai.quarantineinformationmanagement.api.model.UpdateQIRequestModel;
+import com.thanhtai.quarantineinformationmanagement.api.model.*;
+import com.thanhtai.quarantineinformationmanagement.error.AlreadyExistedException;
+import com.thanhtai.quarantineinformationmanagement.error.DuplicateException;
+import com.thanhtai.quarantineinformationmanagement.error.InvalidProvinceName;
+import com.thanhtai.quarantineinformationmanagement.error.ResourceNotFoundException;
 import com.thanhtai.quarantineinformationmanagement.model.QuarantineInformation;
 import com.thanhtai.quarantineinformationmanagement.repository.QuarantineInformationRepository;
 import org.modelmapper.ModelMapper;
@@ -30,16 +31,16 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
 
     @Override
     public QuarantineInformation createQuarantineInformation(CreateQIRequestModel createQIRequestModel) {
-        // TODO: catch origin=destination
+        // TODO: catch
         // already existed same start date and place
         validateSameOriginFromAndDestination(createQIRequestModel.getOriginFrom().toString()
                 ,createQIRequestModel.getDestination().toString());
-        Optional<QuarantineInformation> optionalQuarantineInformation = quarantineInformationRepository.findByOriginFromAndAndDestinationAndStartAt(
+        Optional<QuarantineInformation> optionalQuarantineInformation = quarantineInformationRepository.findByOriginFromAndDestinationAndStartAt(
                 createQIRequestModel.getOriginFrom().toString()
                 , createQIRequestModel.getDestination().toString()
-                , createQIRequestModel.getStartAt().toString());
+                , createQIRequestModel.getStartAt());
         if (optionalQuarantineInformation.isPresent()) {
-            throw new RuntimeException("Already existed, please update it");
+            throw new AlreadyExistedException("This quarantine information");
         }
         QuarantineInformation quarantineInformation =
                 modelMapper.map(createQIRequestModel, QuarantineInformation.class);
@@ -47,9 +48,46 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
     }
 
     @Override
-    public QuarantineInformationResponse getListQuarantineInformation(Integer page) {
-        Page<QuarantineInformation> quarantineInformationList =
-                quarantineInformationRepository.findAllBy(PageRequest.of(page, PAGE_SIZE));
+    public QuarantineInformationResponse getListQuarantineInformation(Integer page, String originFrom, String destination) {
+        String originFromUpperCase = originFrom.toUpperCase();
+        String destinationUpperCase = destination.toUpperCase();
+        // check if originFrom and destination is in province enum
+        if (!validateProvinceAPIModelEnum(originFromUpperCase) ||
+            !validateProvinceAPIModelEnum(destinationUpperCase)) {
+            throw new InvalidProvinceName(originFrom + "/" + destination);
+        }
+
+        logger.info("originFrom " + originFromUpperCase + " destination " + destinationUpperCase);
+        Page<QuarantineInformation> quarantineInformationList;
+        if (originFromUpperCase == null) {
+            originFromUpperCase = "ALL";
+        }
+        if (destinationUpperCase == null) {
+            destinationUpperCase = "ALL";
+        }
+
+        if (originFromUpperCase.equals(destinationUpperCase)) {
+            logger.info("find by ALL");
+            quarantineInformationList =
+                    quarantineInformationRepository.findAllBy(PageRequest.of(page, PAGE_SIZE));
+        } else if (originFromUpperCase.equals("ALL")) {
+            logger.info("find by destination");
+            quarantineInformationList =
+                    quarantineInformationRepository
+                            .findAllByDestination(PageRequest.of(page, PAGE_SIZE), destinationUpperCase);
+        } else if (destinationUpperCase.equals("ALL")) {
+            logger.info("find by origin");
+            quarantineInformationList =
+                    quarantineInformationRepository
+                            .findAllByOriginFrom(PageRequest.of(page, PAGE_SIZE),originFromUpperCase);
+        } else {
+            logger.info("find by origin and destination");
+            quarantineInformationList =
+                    quarantineInformationRepository.findAllByOriginFromAndDestination(
+                            PageRequest.of(page, PAGE_SIZE)
+                            , originFromUpperCase
+                            , destinationUpperCase);
+        }
         return buildQuarantineInformationResponseModel(quarantineInformationList);
     }
 
@@ -66,13 +104,11 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
         QuarantineInformation quarantineInformation
                 = quarantineInformationRepository.findQuarantineInformationById(quarantineInfoId);
         if (quarantineInformation==null) {
-            throw new RuntimeException("quarantineInfoId=" + quarantineInfoId + " not existed");
+            throw new ResourceNotFoundException("quarantineInfoId= " + quarantineInfoId);
         }
         QuarantineInformation updatedQuarantineInformation
                 = quarantineInformationRepository.save(updateQuarantineInformation(quarantineInformation, updateQIRequestModel));
-        QuarantineInformationResponseModel responseModel
-                = modelMapper.map(updatedQuarantineInformation, QuarantineInformationResponseModel.class);
-        return responseModel;
+        return modelMapper.map(updatedQuarantineInformation, QuarantineInformationResponseModel.class);
     }
 
     private QuarantineInformation updateQuarantineInformation(QuarantineInformation quarantineInformation, UpdateQIRequestModel updateQIRequestModel) {
@@ -86,14 +122,22 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
     private void validateNotExisted(String quarantineInfoId) {
         Optional<QuarantineInformation> optionalQuarantineInformation = quarantineInformationRepository.findById(quarantineInfoId);
         if (optionalQuarantineInformation.isEmpty()) {
-            throw new RuntimeException("quarantineInfoId=" + quarantineInfoId + " not existed");
+            throw new ResourceNotFoundException("quarantineInfoId=" + quarantineInfoId);
         }
     }
 
     private void validateSameOriginFromAndDestination(String originFrom, String destination) {
         if (originFrom.equals(destination)) {
-            throw new RuntimeException("origin must differ to destination");
+            throw new DuplicateException(originFrom + "/" + destination);
         }
+    }
+
+    private boolean validateProvinceAPIModelEnum(String province) {
+        if (Province.fromValue(province)!=null || province.equals("ALL")) {
+            logger.info("Input province " + province);
+            return true;
+        }
+        return false;
     }
 
     private QuarantineInformationResponse buildQuarantineInformationResponseModel(Page<QuarantineInformation> quarantineInformationList) {
@@ -102,6 +146,8 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
         quarantineInformationResponse.setTotalPage(quarantineInformationList.getTotalPages());
         quarantineInformationResponse.setTotalElements(quarantineInformationList.getNumberOfElements());
         quarantineInformationList.stream().forEach(quarantineInformation -> {
+            logger.info("quarantineInformation" + quarantineInformation.getDestination());
+
             QuarantineInformationResponseModel qiResponseModel =
                     modelMapper.map(quarantineInformation, QuarantineInformationResponseModel.class);
             quarantineInformationResponse.addQuarantineInformationListItem(qiResponseModel);

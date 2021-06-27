@@ -110,7 +110,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>3.0.3</version>
+                <version> 3.0.3 </version>
                 <executions>
                     <execution>
                         <id>spring-boot-api</id>

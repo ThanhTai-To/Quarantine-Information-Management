@@ -12,8 +12,15 @@ public interface QuarantineInformationRepository extends MongoRepository<Quarant
 
     @Query(sort = "{ _id : -1 }")
     Page<QuarantineInformation> findAllBy(Pageable pageable);
+    @Query(sort = "{ _id : -1 }")
+    Page<QuarantineInformation> findAllByOriginFrom(Pageable pageable, String originFrom);
+    @Query(sort = "{ _id : -1 }")
+    Page<QuarantineInformation> findAllByDestination(Pageable pageable, String destination);
+    @Query(sort = "{ _id : -1 }")
+    Page<QuarantineInformation> findAllByOriginFromAndDestination(Pageable pageable, String originFrom, String destination);
 
-    Optional<QuarantineInformation> findByOriginFromAndAndDestinationAndStartAt(String originFrom
+
+    Optional<QuarantineInformation> findByOriginFromAndDestinationAndStartAt(String originFrom
             , String destination, String startAt);
     QuarantineInformation findQuarantineInformationById(String id);
 

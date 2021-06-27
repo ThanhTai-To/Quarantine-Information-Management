@@ -30,7 +30,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: '#/components/schemas/Fault'
   /admin/quarantine-information:
     get:
       tags:
@@ -43,7 +43,19 @@ paths:
           description: page number, start at page 0, each page will return 20 items
           schema:
             type: integer
+            minimum: 0
             default: 0
+          required: true
+        - in: query
+          name: originFrom
+          schema:
+            type: string
+          description: province where people come from
+        - in: query
+          name: destination
+          schema:
+            type: string
+          description: province where people want to go
       responses:
         '200':
           description: Get list quarantine information
@@ -56,7 +68,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: '#/components/schemas/Fault'
     post:
       tags:
         - createQuarantineInformation
@@ -80,7 +92,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: '#/components/schemas/Fault'
   /admin/quarantine-information/{quarantineInfoId}:
     delete:
       tags:
@@ -107,7 +119,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: '#/components/schemas/Fault'
     put:
       tags:
         - updateQuarantineInformationById
@@ -139,7 +151,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiError'
+                $ref: '#/components/schemas/Fault'
 
 components:
   schemas:
@@ -175,11 +187,11 @@ components:
         startAt:
           type: string
           pattern: '^\d{2}-\d{2}-\d{4}$'
-          description: dd-mm-yyyy
+          description: mm-dd-yyyy
         endAt:
           type: string
           pattern: '^\d{2}-\d{2}-\d{4}$'
-          description: dd-mm-yyyy
+          description: mm-dd-yyyy
     UpdateQIRequestModel:
       type: object
       required:
@@ -195,7 +207,7 @@ components:
         endAt:
           type: string
           pattern: '^\d{2}-\d{2}-\d{4}$'
-          description: dd-mm-yyyy
+          description: mm-dd-yyyy
         reasonUpdated:
           type: string
 
@@ -248,25 +260,17 @@ components:
           type: string
 
 
-    ApiError:
-      type: object
-      properties:
-        faults:
-          type: array
-          items:
-            $ref: "#/components/schemas/Fault"
-        responseCode:
-          type: integer
+
     Fault:
       type: object
       properties:
+        timestamp:
+          type: string
         responseCode:
           type: integer
-        internalMessage:
-          type: string
-        code:
+        errorCode:
           type: integer
-        userMessage:
+        errorMessage:
           type: string
 
     Province:
