@@ -50,11 +50,13 @@ paths:
           name: originFrom
           schema:
             type: string
+            default: null
           description: province where people come from
         - in: query
           name: destination
           schema:
             type: string
+            default: null
           description: province where people want to go
       responses:
         '200':
@@ -187,11 +189,11 @@ components:
         startAt:
           type: string
           pattern: '^\d{2}-\d{2}-\d{4}$'
-          description: mm-dd-yyyy
+          description: dd-mm-yyyy
         endAt:
           type: string
           pattern: '^\d{2}-\d{2}-\d{4}$'
-          description: mm-dd-yyyy
+          description: dd-mm-yyyy
     UpdateQIRequestModel:
       type: object
       required:
@@ -207,7 +209,7 @@ components:
         endAt:
           type: string
           pattern: '^\d{2}-\d{2}-\d{4}$'
-          description: mm-dd-yyyy
+          description: dd-mm-yyyy
         reasonUpdated:
           type: string
           minLength: 8
