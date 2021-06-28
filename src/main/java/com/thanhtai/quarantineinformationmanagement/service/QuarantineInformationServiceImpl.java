@@ -49,6 +49,13 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
 
     @Override
     public QuarantineInformationResponse getListQuarantineInformation(Integer page, String originFrom, String destination) {
+        if (originFrom == null) {
+            originFrom = "ALL";
+        }
+        if (destination == null) {
+            destination = "ALL";
+        }
+
         String originFromUpperCase = originFrom.toUpperCase();
         String destinationUpperCase = destination.toUpperCase();
         // check if originFrom and destination is in province enum
@@ -59,12 +66,6 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
 
         logger.info("originFrom " + originFromUpperCase + " destination " + destinationUpperCase);
         Page<QuarantineInformation> quarantineInformationList;
-        if (originFromUpperCase == null) {
-            originFromUpperCase = "ALL";
-        }
-        if (destinationUpperCase == null) {
-            destinationUpperCase = "ALL";
-        }
 
         if (originFromUpperCase.equals(destinationUpperCase)) {
             logger.info("find by ALL");
