@@ -71,6 +71,12 @@
             <optional>true</optional>
         </dependency>
 
+        <properties>
+            <sonar.projectKey>ThanhTai-To_Quarantine-Information-Management</sonar.projectKey>
+            <sonar.organization>thanhtai-to</sonar.organization>
+            <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        </properties>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -86,9 +92,6 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-
-
 
     </dependencies>
 
@@ -110,7 +113,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version> 3.0.3 </version>
+                <version>3.0.3</version>
                 <executions>
                     <execution>
                         <id>spring-boot-api</id>
