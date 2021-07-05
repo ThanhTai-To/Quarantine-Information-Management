@@ -57,8 +57,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/*").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/*")
+                .permitAll()
                 .antMatchers(HttpMethod.POST, "/admin/auth")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/admin/quarantine-information")
                 .permitAll()
                 .anyRequest()
                 .authenticated().and().httpBasic();
