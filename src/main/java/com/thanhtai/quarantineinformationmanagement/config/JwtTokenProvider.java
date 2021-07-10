@@ -24,7 +24,6 @@ public class JwtTokenProvider {
     private int jwtExpirationInMs;
     public String generateToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        logger.info("JwtProvider: username=" + userDetails.getUsername() + " pass=" + userDetails.getPassword());
 
         Date expiryDate = new Date(DateHelper.now.getTime() + jwtExpirationInMs);
         return Jwts.builder()
@@ -39,7 +38,6 @@ public class JwtTokenProvider {
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
-        logger.info("getUserNameFromJWT " + claims.toString());
         return claims.getSubject();
     }
     public boolean validateToken(String authToken){

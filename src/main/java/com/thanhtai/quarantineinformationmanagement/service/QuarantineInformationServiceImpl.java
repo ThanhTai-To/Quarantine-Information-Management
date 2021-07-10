@@ -31,7 +31,6 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
 
     @Override
     public QuarantineInformation createQuarantineInformation(CreateQIRequestModel createQIRequestModel) {
-        // TODO: catch
         // already existed same start date and place
         validateSameOriginFromAndDestination(createQIRequestModel.getOriginFrom().toString()
                 ,createQIRequestModel.getDestination().toString());
@@ -68,21 +67,16 @@ public class QuarantineInformationServiceImpl implements QuarantineInformationSe
         Page<QuarantineInformation> quarantineInformationList;
 
         if (originFromUpperCase.equals(destinationUpperCase)) {
-            logger.info("find by ALL");
-            quarantineInformationList =
-                    quarantineInformationRepository.findAllBy(PageRequest.of(page, PAGE_SIZE));
+            quarantineInformationList = quarantineInformationRepository.findAllBy(PageRequest.of(page, PAGE_SIZE));
         } else if (originFromUpperCase.equals("ALL")) {
-            logger.info("find by destination");
             quarantineInformationList =
                     quarantineInformationRepository
                             .findAllByDestination(PageRequest.of(page, PAGE_SIZE), destinationUpperCase);
         } else if (destinationUpperCase.equals("ALL")) {
-            logger.info("find by origin");
             quarantineInformationList =
                     quarantineInformationRepository
                             .findAllByOriginFrom(PageRequest.of(page, PAGE_SIZE),originFromUpperCase);
         } else {
-            logger.info("find by origin and destination");
             quarantineInformationList =
                     quarantineInformationRepository.findAllByOriginFromAndDestination(
                             PageRequest.of(page, PAGE_SIZE)

@@ -39,11 +39,7 @@ public class AdminController implements AdminApi {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @GetMapping("/")
-//    @CrossOrigin("*")
-    public String test() {
-        return "Test";
-    }
+
 
     @Override
     @CrossOrigin("*")
@@ -80,25 +76,19 @@ public class AdminController implements AdminApi {
     @Override
     @CrossOrigin("*")
     public ResponseEntity<LoginResponse> login(@Valid LoginRequestModel loginRequestModel) {
-        try{
-            logger.info("before auth");
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequestModel.getUsername(),
-                            loginRequestModel.getPassword()
-                    )
-            );
-            logger.info("authentication "+authentication.toString());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.info("after set security ");
-            String jwt = jwtTokenProvider.generateToken(authentication);
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setAccessToken(jwt);
-            loginResponse.setTokenType("Bearer");
-            return ResponseEntity.ok(loginResponse);
-        } catch (BadCredentialsException e) {
-            throw new UsernameNotFoundException("Logging: "+e.getMessage());
-        }
+        logger.info("before auth");
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequestModel.getUsername(),
+                        loginRequestModel.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtTokenProvider.generateToken(authentication);
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setAccessToken(jwt);
+        loginResponse.setTokenType("Bearer");
+        return ResponseEntity.ok(loginResponse);
     }
 
     private ObjectSuccessResponse buildObjectSuccessResponse(String id) {
@@ -107,6 +97,4 @@ public class AdminController implements AdminApi {
         response.setResponseCode(HttpStatus.CREATED.value());
         return response;
     }
-
-
 }
